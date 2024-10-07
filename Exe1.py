@@ -38,89 +38,107 @@ if __name__ == "__main__":
         symbols={'a', 'b', 'c'},
         transitions={
             ('q0', 'a'): 'q1',
+            ('q1', 'a'): 'q2',
             ('q1', 'b'): 'q1',
-            ('q1', 'c'): 'q2',
-            ('q2', 'c'): 'q2',
+            ('q1', 'c'): 'q1',
             ('q2', 'a'): 'q1',
+            ('q2', 'b'): 'q1',
+            ('q2', 'c'): 'q1'
         },
         initial_states='q0',
         final_states={'q1', 'q2'}
     )
 
-    print(afd_a.accept('abc'))
-    print(afd_a.accept('abcc'))
-    print(afd_a.accept('abccc'))
-    print(afd_a.accept('ac'))
-    print(afd_a.accept('bcc'))
+    #  Testando o automato
+    print(afd_a.accept('aaaaa'))
+    print(afd_a.accept('abcbcbcbcb'))
+    print(afd_a.accept('abcabcabc'))
+    print(afd_a.accept('cccccc'))
+    print(afd_a.accept('bbbbbbb'))
 
     #  b) aaa(b | c)* | (b | c)* aaa
     print("b) aaa(b | c)* | (b | c)* aaa")
     afd_b = AFD(
-        states={'q0', 'q1', 'q2', 'q3', 'q4', 'q5'},
+        states={'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7'},
         symbols={'a', 'b', 'c'},
         transitions={
             ('q0', 'a'): 'q1',
+            ('q0', 'b'): 'q4',
+            ('q0', 'c'): 'q4',
             ('q1', 'a'): 'q2',
             ('q2', 'a'): 'q3',
             ('q3', 'b'): 'q3',
             ('q3', 'c'): 'q3',
-            ('q0', 'b'): 'q4',
-            ('q0', 'c'): 'q4',
             ('q4', 'b'): 'q4',
             ('q4', 'c'): 'q4',
-            ('q4', 'a'): 'q1'
+            ('q4', 'a'): 'q5',
+            ('q5', 'a'): 'q6',
+            ('q6', 'a'): 'q7',
         },
         initial_states='q0',
-        final_states={'q3', 'q4'}
+        final_states={'q3', 'q7'}
     )
 
-    print(afd_b.accept("aaabaaacbcaaa"))  # True
-    print(afd_b.accept("aaaaaa"))  # True
-    print(afd_b.accept("aaa"))  # False
-    print(afd_b.accept("bcaaa"))  # False
+    #  Testando o automato
+    print(afd_b.accept("aaabcbcbcb"))
+    print(afd_b.accept("aaa"))
+    print(afd_b.accept("bcbcbcbcbcaaa"))
+    print(afd_b.accept("aaa"))
+    print(afd_b.accept("bcbcbcbcb"))
+    print(afd_b.accept("bbbbbb"))
+    print(afd_b.accept("cccccc"))
 
     #  c) a*b | ab*
     print("c) a*b | ab*")
     afd_c = AFD(
-        states={'q0', 'q1', 'q2'},
+        states={'q0q1q2', 'q1', 'q2', 'q1q4', 'q2q4', 'q4'},
         symbols={'a', 'b'},
         transitions={
-            ('q0', 'a'): 'q0',
-            ('q0', 'b'): 'q1',
-            ('q1', 'b'): 'q1'
+            ('q0q1q2', 'a'): 'q1q4',
+            ('q0q1q2', 'b'): 'q2',
+            ('q1q4', 'a'): 'q1',
+            ('q1q4', 'b'): 'q2q4',
+            ('q1', 'a'): 'q1',
+            ('q1', 'b'): 'q2',
+            ('q2q4', 'b'): 'q4',
+            ('q4', 'b'): 'q4',
         },
-        initial_states='q0',
-        final_states={'q1'}
+        initial_states='q0q1q2',
+        final_states={'q0q1q2', 'q4', 'q2q4', 'q1q4', 'q2'}
     )
 
     # Testando o autômato
-    print(afd_c.accept("b"))  # True
-    print(afd_c.accept("aab"))  # True
-    print(afd_c.accept("abb"))  # True
-    print(afd_c.accept("aa"))  # False
+    print(afd_c.accept("aaaaaab"))
+    print(afd_c.accept("abbbbb"))
+    print(afd_c.accept("abababab"))
+    print(afd_c.accept("aaaaaaa"))
+    print(afd_c.accept("bbbbbbb"))
 
     #  d) a*b* (a | ac*)
     print("d) a*b* (a | ac*)")
     afd_d = AFD(
-        states={'q0', 'q1', 'q2', 'q3', 'q4'},
+        states={'q0', 'q1', 'q2', 'q3', 'q0q2'},
         symbols={'a', 'b', 'c'},
         transitions={
-            ('q0', 'a'): 'q1',
-            ('q0', 'b'): 'q2',
-            ('q1', 'a'): 'q1',
-            ('q1', 'b'): 'q2',
-            ('q2', 'b'): 'q2',
-            ('q2', 'a'): 'q4',
-            ('q1', 'c'): 'q3',
-            ('q3', 'c'): 'q3',
-            ('q3', 'a'): 'q4'
+            ('q0', 'a'): 'q0q2',
+            ('q0', 'b'): 'q1',
+            ('q1', 'a'): 'q2',
+            ('q1', 'b'): 'q1',
+            ('q0q2', 'a'): 'q0q2',
+            ('q0q2', 'b'): 'q1',
+            ('q0q2', 'c'): 'q3',
+            ('q2', 'c'): 'q3',
+            ('q3', 'c'): 'q3'
         },
         initial_states='q0',
-        final_states={'q1', 'q3', 'q4'}
+        final_states={'q0q2', 'q2', 'q3'}
     )
 
     # Testando o autômato
-    print(afd_d.accept("aaac"))  # True
-    print(afd_d.accept("abca"))  # True
-    print(afd_d.accept("aabc"))  # False
+    print(afd_d.accept("a"))
+    print(afd_d.accept("aaabbbba"))
+    print(afd_d.accept("ababababa"))
+    print(afd_d.accept("accccccccc"))
+    print(afd_d.accept("ababababab"))
+    print(afd_d.accept("abcccccccc"))
 
